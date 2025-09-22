@@ -1,7 +1,11 @@
-const AddPlantForm = () => {
+import PropTypes from "prop-types"
+import { TbFidgetSpinner } from "react-icons/tb"
+
+const AddPlantForm = ({ handleAddPlants, setAddImgButton, addImgButton, loading }) => {
+
   return (
     <div className='w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50'>
-      <form>
+      <form onSubmit={handleAddPlants}>
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10'>
           <div className='space-y-6'>
             {/* Name */}
@@ -87,6 +91,7 @@ const AddPlantForm = () => {
                 <div className='flex flex-col w-max mx-auto text-center'>
                   <label>
                     <input
+                      onChange={(e) => setAddImgButton({... addImgButton, image:e.target.files[0]})}
                       className='text-sm cursor-pointer w-36 hidden'
                       type='file'
                       name='image'
@@ -94,11 +99,16 @@ const AddPlantForm = () => {
                       accept='image/*'
                       hidden
                     />
-                    <div className='bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500'>
-                      Upload
+                    <div className={`${addImgButton?.image? "":"bg-lime-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-lime-500"} `}>
+                      {addImgButton?.image? <img className="h-28  object-cover" src={URL.createObjectURL(addImgButton.image)} alt="" />:addImgButton?.name  }
                     </div>
                   </label>
                 </div>
+              </div>
+              <div>
+                {
+                  addImgButton?.image?.size && <p>Size: {parseInt(addImgButton?.image?.size/1024)}KB</p>
+                }
               </div>
             </div>
 
@@ -107,13 +117,23 @@ const AddPlantForm = () => {
               type='submit'
               className='w-full p-3 mt-5 text-center font-medium text-white transition duration-200 rounded shadow-md bg-lime-500 '
             >
-              Save & Continue
+              {
+                loading? <TbFidgetSpinner className='animate-spin m-auto' />: "Save & Continue"
+              }
+              
             </button>
           </div>
         </div>
       </form>
     </div>
   )
+}
+
+AddPlantForm.propTypes = {
+  handleAddPlants: PropTypes.func.isRequired,
+  addImgButton: PropTypes.object.isRequired,
+  setAddImgButton: PropTypes.func.isRequired,
+  loading:PropTypes.bool.isRequired,
 }
 
 export default AddPlantForm

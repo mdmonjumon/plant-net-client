@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom'
+import PropTypes from "prop-types"
 
-const Card = () => {
+const Card = ({ plant }) => {
+
+  const {_id, name, category, quantity, price, image} = plant;
+  
+ 
   return (
     <Link
-      to={`/plant/1`}
-      className='col-span-1 cursor-pointer group shadow-xl p-3 rounded-xl'
+      to={`/plant/${_id}`}
+      className='col-span-1 cursor-pointer group shadow-xl p-3 rounded-xl text-black'
     >
       <div className='flex flex-col gap-2 w-full'>
         <div
@@ -24,8 +29,8 @@ const Card = () => {
                 group-hover:scale-110 
                 transition
               '
-            src='https://i.ibb.co.com/rMHmQP2/money-plant-in-feng-shui-brings-luck.jpg'
-            alt='Plant Image'
+            src={image}
+            alt={name}
           />
           <div
             className='
@@ -35,15 +40,20 @@ const Card = () => {
             '
           ></div>
         </div>
-        <div className='font-semibold text-lg'>Money Plant</div>
-        <div className='font-semibold text-lg'>Category: Indoor</div>
-        <div className='font-semibold text-lg'>Quantity: 10</div>
+        <div className='font-semibold text-lg'>{name}</div>
+        <div className='font-semibold text-lg'>Category: {category}</div>
+        <div className='font-semibold text-lg'>Quantity: {quantity}</div>
         <div className='flex flex-row items-center gap-1'>
-          <div className='font-semibold'> Price: 15$</div>
+          <div className='font-semibold'> Price: {price}$</div>
         </div>
       </div>
     </Link>
   )
+}
+
+
+Card.propTypes={
+  plant: PropTypes.object
 }
 
 export default Card

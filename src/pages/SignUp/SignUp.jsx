@@ -3,31 +3,51 @@ import { FcGoogle } from 'react-icons/fc'
 import useAuth from '../../hooks/useAuth'
 import { toast } from 'react-hot-toast'
 import { TbFidgetSpinner } from 'react-icons/tb'
+import { imageUpload } from '../../utils'
+
 
 const SignUp = () => {
-  const { createUser, updateUserProfile, signInWithGoogle, loading } = useAuth()
+  const { createUser, updateUserProfile, signInWithGoogle, loading, setPostUser } = useAuth()
   const navigate = useNavigate()
   // form submit handler
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     const form = event.target
     const name = form.name.value
     const email = form.email.value
     const password = form.password.value
+    const image = form.image.files[0];
+
+    const imageUrl = await imageUpload(image);
+
+
+
 
     try {
       //2. User Registration
-      const result = await createUser(email, password)
+      await createUser(email, password)
 
       //3. Save username & profile photo
-      await updateUserProfile(
-        name,
-        'https://lh3.googleusercontent.com/a/ACg8ocKUMU3XIX-JSUB80Gj_bYIWfYudpibgdwZE1xqmAGxHASgdvCZZ=s96-c'
-      )
-      console.log(result)
+      console.log("before update user profile")
+      // await updateUserProfile(name, imageUrl)
+      updateUserProfile(name, imageUrl)
+        .then(() => {
+          setPostUser(true)
+          console.log('resolve')
+          navigate('/')
+          toast.success('Signup Successful')
+        })
+        .catch((error) => {
+          console.log(error)
+        })
 
-      navigate('/')
-      toast.success('Signup Successful')
+      // console.log("after update user profile")
+      // await auth.currentUser.reload();
+      // setUser(auth.currentUser)
+
+
+      // navigate('/')
+      // toast.success('Signup Successful')
     } catch (err) {
       console.log(err)
       toast.error(err?.message)
@@ -39,7 +59,6 @@ const SignUp = () => {
     try {
       //User Registration using google
       await signInWithGoogle()
-
       navigate('/')
       toast.success('Signup Successful')
     } catch (err) {
@@ -47,6 +66,8 @@ const SignUp = () => {
       toast.error(err?.message)
     }
   }
+
+
   return (
     <div className='flex justify-center items-center min-h-screen bg-white'>
       <div className='flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900'>
