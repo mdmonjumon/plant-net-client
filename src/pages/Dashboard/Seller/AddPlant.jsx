@@ -52,6 +52,8 @@ const AddPlant = () => {
       const result = await axiosSecure.post(`/plants`, plantsInfo);
       if (result.data.insertedId) {
         toast.success(`${name} added`)
+        form.reset();
+        setAddImgButton({... addImgButton, image:null})
       }
     } catch (error) {
       console.log(error)

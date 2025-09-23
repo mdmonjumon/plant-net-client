@@ -11,6 +11,7 @@ import useAuth from '../../hooks/useAuth';
 import Button from '../Shared/Button/Button';
 import toast from 'react-hot-toast';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { useNavigate } from 'react-router-dom';
 
 const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
 
@@ -20,7 +21,8 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   const [totalQuantity, setTotalQuantity] = useState(1)
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [totalPrice, setTotalPrice] = useState(price)
-  const quantityValue = useRef()
+  const quantityValue = useRef();
+  const navigate = useNavigate()
 
 
   // Quantity validation
@@ -74,6 +76,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
       await axiosSecure.patch(`/plants/quantity/${_id}`, {quantityToUpdate:totalQuantity, status:"decrease"});
       refetch()
       toast.success('Order Successful');
+      navigate('/dashboard/my-orders')
     } catch (error) {
       console.log(error);
 
