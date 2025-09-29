@@ -5,11 +5,13 @@ import useAuth from '../../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { axiosSecure } from '../../../hooks/useAxiosSecure';
+import { useNavigate } from 'react-router-dom';
 
 const AddPlant = () => {
   const { user } = useAuth();
   const [addImgButton, setAddImgButton] = useState({ name: 'Upload Image' });
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
 
   const handleAddPlants = async (e) => {
@@ -53,7 +55,8 @@ const AddPlant = () => {
       if (result.data.insertedId) {
         toast.success(`${name} added`)
         form.reset();
-        setAddImgButton({... addImgButton, image:null})
+        setAddImgButton({ ...addImgButton, image: null })
+        navigate('/dashboard/my-inventory')
       }
     } catch (error) {
       console.log(error)
