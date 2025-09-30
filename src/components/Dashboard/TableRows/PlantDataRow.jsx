@@ -73,7 +73,7 @@ const PlantDataRow = ({ plant, refetch }) => {
           ></span>
           <span className='relative'>Delete</span>
         </span>
-        <DeleteModal isOpen={isOpen} closeModal={closeModal} handleDeletePlant={handleDeletePlant} />
+        <DeleteModal isOpen={isOpen} closeModal={closeModal} handleDelete={handleDeletePlant} />
       </td>
       <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>
         <span

@@ -27,7 +27,6 @@ const CustomerOrderDataRow = ({ orderData, refetch }) => {
     finally {
       closeModal()
     }
-
   }
 
   return (
@@ -71,7 +70,7 @@ const CustomerOrderDataRow = ({ orderData, refetch }) => {
           <span className='relative cursor-pointer'>Cancel</span>
         </button>
 
-        <DeleteModal handleCancelButton={handleCancelButton} isOpen={isOpen} closeModal={closeModal} />
+        <DeleteModal handleDelete={handleCancelButton} isOpen={isOpen} closeModal={closeModal} />
       </td>
     </tr>
   )
