@@ -8,10 +8,14 @@ import {
 } from '@headlessui/react'
 import { Fragment, useRef, useState } from 'react'
 import useAuth from '../../hooks/useAuth';
-import Button from '../Shared/Button/Button';
 import toast from 'react-hot-toast';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { useNavigate } from 'react-router-dom';
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from '../Form/CheckoutForm';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK)
 
 const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
 
@@ -20,9 +24,11 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   const { _id, name, category, price, quantity, seller } = plant;
   const [totalQuantity, setTotalQuantity] = useState(1)
   const [deliveryAddress, setDeliveryAddress] = useState('')
-  const [totalPrice, setTotalPrice] = useState(price)
+  const [totalPrice, setTotalPrice] = useState(price);
   const quantityValue = useRef();
   const navigate = useNavigate()
+
+
 
 
   // Quantity validation
@@ -51,7 +57,8 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   }
 
 
-  const handlePurchase = async () => {
+
+  const handlePurchase = async (transactionId) => {
 
     if (!totalQuantity || !deliveryAddress) {
       return toast.error(`${!totalQuantity && "Quantity" || !deliveryAddress && "Address"} cannot be empty`)
@@ -64,22 +71,22 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
         image: user?.photoURL
       },
       plantId: _id,
-      price: totalPrice,
+      // price: totalPrice,
       quantity: totalQuantity,
       sellerEmail: seller?.email,
       address: deliveryAddress,
+      transactionId: transactionId,
       status: "pending"
     }
 
     try {
       await axiosSecure.post('/order', orderInfo);
-      await axiosSecure.patch(`/plants/quantity/${_id}`, {quantityToUpdate:totalQuantity, status:"decrease"});
+      await axiosSecure.patch(`/plants/quantity/${_id}`, { quantityToUpdate: totalQuantity, status: "decrease" });
       refetch()
       toast.success('Order Successful');
       navigate('/dashboard/my-orders')
     } catch (error) {
       console.log(error);
-
     }
     finally {
       closeModal()
@@ -171,7 +178,10 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
                   />
                 </div>
 
-                <Button onClick={handlePurchase} label={`pay ${totalPrice}$`} ></Button>
+                {/* <Button onClick={handlePurchase} label={`pay ${totalPrice}$`} ></Button> */}
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm totalPrice={totalPrice} handlePurchase={handlePurchase} totalQuantity={totalQuantity} id={_id} />
+                </Elements>
 
 
               </DialogPanel>
